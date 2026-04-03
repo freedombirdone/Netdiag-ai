@@ -1,0 +1,54 @@
+# netdiag-ai configuration
+
+llm:
+  model: "claude-opus-4-6"
+  max_tokens: 8192
+  thinking: adaptive      # Use adaptive thinking for complex correlations
+  stream: true
+
+severity_thresholds:
+  # Cisco syslog numeric severities that trigger P1
+  p1_severities: [0, 1, 2]
+  # P1 regardless of numeric severity if from these facilities
+  p1_facilities:
+    - LINEPROTO
+    - BGP
+    - OSPF
+    - EIGRP
+    - ISIS
+    - MPLS
+    - REDUNDANCY
+    - HSRP
+    - VRRP
+    - SYS
+  # Error (3) is P1 for critical facilities, P2 otherwise
+  critical_facility_escalation: true
+
+pcap:
+  # Thresholds for anomaly detection
+  retransmit_threshold: 10     # % retransmissions before flagging
+  syn_rate_threshold: 100      # SYN packets/sec before flagging as potential flood
+  error_rate_threshold: 5      # % of frames with errors
+
+correlation:
+  # Max seconds between events to consider them related
+  time_window_seconds: 300
+  # Correlate events on the same device
+  correlate_by_device: true
+  # Correlate events on the same interface
+  correlate_by_interface: true
+
+devices:
+  # Add device profiles here for richer context
+  # router1:
+  #   type: "Cisco IOS"
+  #   role: "core"
+  #   interfaces:
+  #     - GigabitEthernet0/0
+  #     - GigabitEthernet0/1
+
+output:
+  # Default output directory for reports
+  report_dir: "./reports"
+  # Include raw events in JSON report
+  include_raw_events: false
